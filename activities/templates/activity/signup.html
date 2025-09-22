@@ -1,0 +1,16 @@
+{% extends 'activity/base.html' %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block content %}
+<h1>Créer un compte</h1>
+<form method="post" action="{% url 'signup' %}">
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit" class="btn btn-primary">Envoyer</button>
+</form>
+
+<p class="mt-3">
+    <a href="{% url 'connexion' %}">Déjà inscrit ? Se connecter</a>
+</p>
+{% endblock %}

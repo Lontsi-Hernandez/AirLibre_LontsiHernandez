@@ -1,0 +1,56 @@
+{% extends 'activity/base.html' %}
+
+{% block title %}Détail de l'activité{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h2>{{ activity.title }}</h2>
+        </div>
+        <div class="card-body">
+            <p><strong>Ville :</strong> {{ activity.location_city }}</p>
+           
+            <p><strong>Date et heure de début :</strong> {{ activity.start_time|date:"d/m/Y H:i" }}</p>
+            <p><strong>Date et heure de fin :</strong> {{ activity.end_time|date:"d/m/Y H:i" }}</p>
+            <p><strong>Organisateur :</strong> {{ activity.proposer.username }}</p>
+            <p><strong>Description :</strong> {{ activity.description }}</p>
+           <p><strong>Participants :</strong>
+                {% if activity.attendees.all %}
+                    {% for act in activity.attendees.all %}
+                        {{ act.username }}
+                    {% endfor %}
+                {% else %}
+                    Aucun participant
+                {% endif %}
+            </p>
+
+            <hr>
+            <h5 class="mt-4">Qualité de l'air à {{ activity.location_city }}</h5>
+            {% if air_quality and air_quality.status == "ok" %}
+                <ul class="list-group mb-3">
+                    <li class="list-group-item">
+                        <strong>Indice AQI :</strong> {{ air_quality.data.aqi }}
+                    </li>
+                   
+                </ul>
+            {% elif air_quality %}
+                <div class="alert alert-warning">Données de qualité de l'air indisponibles pour cette ville.</div>
+            {% else %}
+                <div class="alert alert-warning">Impossible de récupérer la qualité de l'air.</div>
+            {% endif %}
+            
+            {% if user.is_authenticated %}
+                {% if user in activity.attendees.all %}
+                    <a href="{% url 'se_desinscrire' activity.id %}" class="btn btn-danger">Se désinscrire</a>
+                {% else %}
+                    <a href="{% url 's_inscrire' activity.id user.id%}" class="btn btn-success">S'inscrire</a>
+                {% endif %}
+            {% else %}
+                <div class="alert alert-info mt-3">Veuillez vous connecter pour vous inscrire à cette activité.</div>
+            {% endif %}
+            <a href="{% url 'index' %}" class="btn btn-secondary">Retour à la liste</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
