@@ -1,0 +1,58 @@
+{% extends "activity/base.html" %}
+
+{% block title %}Mon profil{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Mon Profil</h2>
+    <hr>
+
+   
+    <div class="row">
+        <div class="col-md-4">
+            {% if user.avatar %}
+            <img src="{{ user.avatar.url }}" alt="Avatar" class="img-thumbnail" width="200">
+            {% else %}
+                <img src="../../../media/avatars/ia_image.jpg" alt="Pas d'avatar" class="img-thumbnail">
+            {% endif %}
+        </div>
+        <div class="col-md-8">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Mettre à jour</button>
+            </form>
+        </div>
+    </div>
+
+    <hr>
+    <h3>Mes activités créées</h3>
+    {% if activites_creees %}
+        <ul class="list-group">
+            {% for activity in activites_creees %}
+                <li class="list-group-item">
+                    <strong>{{ activity.title }}</strong> — {{ activity.start_time|date:"d/m/Y H:i" }}
+                    ({{ activity.location_city }})
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aucune activité créée.</p>
+    {% endif %}
+
+    <hr>
+    <h3>Mes inscriptions</h3>
+    {% if activites_inscriptions %}
+        <ul class="list-group">
+            {% for activity in activites_inscriptions %}
+                <li class="list-group-item">
+                    <strong>{{ activity.title }}</strong> — {{ activity.start_time|date:"d/m/Y H:i" }}
+                    ({{ activity.location_city }})
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aucune activité où vous êtes inscrit.</p>
+    {% endif %}
+</div>
+{% endblock %}

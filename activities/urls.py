@@ -31,6 +31,7 @@ urlpatterns = [
     path('s_inscrire/<int:id>/<int:id_u>/', views.s_inscrire, name='s_inscrire'),
     path('se_desinscrire/<int:id>/', views.se_desinscrire, name='se_desinscrire'),
     path('mes_inscriptions/<int:id>/', views.mes_inscriptions, name='mes_inscriptions'),
-    path('<str:location_city>/<int:id>/', views.activity_detail, name='activity_detail')
+    path('<str:location_city>/<int:id>/', views.activity_detail, name='activity_detail'),
+    path('profil/', views.profil, name='profil'),
    
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

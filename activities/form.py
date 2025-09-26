@@ -1,9 +1,27 @@
 from django import forms
 from .models import Activity, User
 from django.contrib.auth import authenticate
+from django.contrib.auth.forms import UserChangeForm
 
-from django.contrib.auth.models import User
 
+class EditUserForm(UserChangeForm):
+    password = None  # pour ne pas afficher le champ password
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'avatar', 'bio']
+        
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email', 'avatar']
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-contro'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+        }
+        
 class SignupForm(forms.ModelForm):
     first_name = forms.CharField(max_length=30, required=False, widget=forms.TextInput(attrs={'class': 'form-control'}), label="Prénom",error_messages={'required': 'Le prénom est obligatoire.'})
     last_name = forms.CharField(max_length=30, required=False, widget=forms.TextInput(attrs={'class': 'form-control'}), label="Nom",error_messages={'required': 'Le nom est obligatoire.'})
@@ -16,11 +34,31 @@ class SignupForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['username', 'email']
+        fields = ['username', 'email', 'avatar']
         widgets = {
-            'username': forms.TextInput(attrs={'class': 'form-control'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'username': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Nom d’utilisateur'
+            }),
+            'email': forms.EmailInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Adresse courriel'
+            }),
+            'avatar': forms.FileInput(attrs={
+                'class': 'form-control-file'
+            }),
         }
+        labels = {
+            'username': 'Nom d’utilisateur',
+            'email': 'Adresse courriel',
+            'avatar': 'Photo de profil',
+        }
+        help_texts = {
+            'username': 'Choisissez un nom unique pour vous connecter.',
+            'email': 'Nous utiliserons cette adresse pour vous contacter.',
+            'avatar': 'Téléversez une image (JPEG, PNG, etc.).',
+        }
+
 
     def clean(self):
         cleaned_data = super().clean()
@@ -37,16 +75,7 @@ class SignupForm(forms.ModelForm):
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError("Les mots de passe ne correspondent pas.")
 
-        # return cleaned_data
-
-    # def save(self, commit=True):
-    #     user = super().save(commit=False)
-    #     user.set_password(self.cleaned_data["password1"])  # mot de passe haché
-    #     if commit:
-    #         user.save()
-    #     return user
-
-
+   
 
 
 class LoginForm(forms.Form):

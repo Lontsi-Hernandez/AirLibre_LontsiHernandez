@@ -6,7 +6,7 @@ from django.contrib import messages
 from .models import Activity, Category
 from django.core.paginator import Paginator
 from .detail_activites import get_air_quality
-from .form import SignupForm
+from .form import SignupForm, UserProfileForm
 from .form import LoginForm
 from .form import LoginForm
 from django.contrib.auth.models import User
@@ -15,9 +15,11 @@ from django.contrib.auth import authenticate,login
 from django.core.files.storage import FileSystemStorage
 from django.contrib.auth import logout
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 from .form import ActivityForm
 
 User = get_user_model()
+
 
 def index(request):
     user = request.user if request.user.is_authenticated else None
@@ -51,7 +53,6 @@ def index(request):
     })
 
 
-
 def signup(request):
     """ Vue pour l'inscription de l'utilisateur """
     if request.method == 'POST':
@@ -60,26 +61,51 @@ def signup(request):
             user = form.save(commit=False)
             user.set_password(form.cleaned_data["password1"])
 
-            avatar = form.cleaned_data.get('avatar')
-            if avatar:
-                fs = FileSystemStorage() 
-                filename = fs.save(avatar.name, avatar)
-                uploaded_file_url = fs.url(filename)
-                user.avatar = filename
-
+            # bio
             bio = form.cleaned_data.get('bio')
             if bio:
                 user.bio = bio
-            user.save()
+
+            user.save()  # Django sauvegarde aussi l’avatar via request.FILES
             
             messages.success(request, "Inscription réussie ! Vous pouvez maintenant vous connecter.")
-            return redirect('connexion') 
+            return redirect('connexion')
         else:
             messages.error(request, "Veuillez corriger les erreurs ci-dessous.")
     else:
         form = SignupForm()
 
     return render(request, 'activity/signup.html', {'form': form})
+
+
+# def signup(request):
+#     """ Vue pour l'inscription de l'utilisateur """
+#     if request.method == 'POST':
+#         form = SignupForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             user = form.save(commit=False)
+#             user.set_password(form.cleaned_data["password1"])
+
+#             avatar = form.cleaned_data.get('avatar')
+#             if avatar:
+#                 fs = FileSystemStorage() 
+#                 filename = fs.save(avatar.name, avatar)
+#                 uploaded_file_url = fs.url(filename)
+#                 user.avatar = filename
+
+#             bio = form.cleaned_data.get('bio')
+#             if bio:
+#                 user.bio = bio
+#             user.save()
+            
+#             messages.success(request, "Inscription réussie ! Vous pouvez maintenant vous connecter.")
+#             return redirect('connexion') 
+#         else:
+#             messages.error(request, "Veuillez corriger les erreurs ci-dessous.")
+#     else:
+#         form = SignupForm()
+
+#     return render(request, 'activity/signup.html', {'form': form})
 
 
 
@@ -104,7 +130,31 @@ def connexion(request):
         form = LoginForm()
 
     return render(request, 'activity/login.html', {"form": form})
-from django.contrib.auth.decorators import login_required
+
+@login_required(login_url='connexion')
+def profil(request):
+    user = request.user
+    if request.method == "POST":
+        form = UserProfileForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Profil mis à jour avec succès.")
+            return redirect('profil')
+    else:
+        form = UserProfileForm(instance=user)
+
+ 
+    activites_creees = Activity.objects.filter(proposer=user).order_by('-start_time')
+
+    print("Avatar",user.avatar)
+    activites_inscriptions = Activity.objects.filter(attendees=user).order_by('-start_time')
+
+    return render(request, "activity/profil.html", {
+        "form": form,
+        "activites_creees": activites_creees,
+        "activites_inscriptions": activites_inscriptions,
+    })
+
 @login_required(login_url='login')
 def deconnexion(request):
     """ Vue pour la déconnexion de l'utilisateur """
@@ -149,15 +199,14 @@ def se_desinscrire(request, id):
 @login_required(login_url='connexion')    
 def mes_inscriptions(request, id):
     
-    inscriptions = Activity.objects.filter(attendees=request.user.id).order_by('start_time')
-    
+    inscriptions = Activity.objects.filter(attendees=request.user).order_by('start_time')
     page_number = request.GET.get('page', 1)
     paginator = Paginator(inscriptions, 3)
     page_obj = paginator.get_page(page_number)
     
     return render(request, 'activity/mes_inscriptions.html', {'page_obj': page_obj})
 
-
+@login_required(login_url='connexion')
 def ajouter_activite(request):
     
     if request.method == "POST":
@@ -172,9 +221,9 @@ def ajouter_activite(request):
     
     return render(request, "activity/form_activity.html", {"form": form})
 
-
+@login_required(login_url='connexion')
 def activity_detail(request, location_city, id):
-    activity = Activity.objects.get(id=id, location_city=location_city)
+    activity = get_object_or_404(Activity,id=id, location_city=location_city)
     air_quality = get_air_quality(location_city)
     return render(request, 'activity/activity_detail.html', {
         'activity': activity,

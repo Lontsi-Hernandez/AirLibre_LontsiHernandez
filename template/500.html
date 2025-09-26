@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Erreur du serveur - 500</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 10rem;
+            position: relative;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        h1::before,
+        h1::after {
+            content: "404";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            color: rgb(2, 78, 255);
+            background: transparent;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+        }
+
+        h1::before {
+            animation: glitchTop 2s infinite linear alternate-reverse;
+        }
+
+        h1::after {
+            animation: glitchBottom 1.5s infinite linear alternate-reverse;
+            color: #3498db;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-top: -20px;
+            animation: fadeIn 2s ease forwards;
+        }
+
+        p {
+            margin-top: 20px;
+            font-size: 1.1rem;
+            color: #bbb;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 25px;
+            background: #0044ff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        a:hover {
+            background: #1251fd;
+            transform: scale(1.05);
+        }
+
+        /* Animations */
+        @keyframes glitchTop {
+            0% { clip: rect(0, 9999px, 0, 0); }
+            10% { clip: rect(10px, 9999px, 80px, 0); transform: translate(-5px, -5px); }
+            20% { clip: rect(85px, 9999px, 140px, 0); transform: translate(5px, 5px); }
+            30% { clip: rect(20px, 9999px, 65px, 0); transform: translate(-3px, 0); }
+            100% { clip: rect(0, 9999px, 0, 0); }
+        }
+
+        @keyframes glitchBottom {
+            0% { clip: rect(0, 9999px, 0, 0); }
+            15% { clip: rect(50px, 9999px, 100px, 0); transform: translate(5px, -5px); }
+            25% { clip: rect(100px, 9999px, 180px, 0); transform: translate(-5px, 5px); }
+            35% { clip: rect(10px, 9999px, 60px, 0); transform: translate(3px, 0); }
+            100% { clip: rect(0, 9999px, 0, 0); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="error">
+        <h1>500</h1>
+        <h2>Une erreur s'est produite lors du traitement</h2>
+        <p>Désolé, pour ce moment genant. Il sera resolu d'ici peu</p>
+        <a href="/">Retour à l'accueil</a>
+    </div>
+</body>
+</html>

@@ -1,13 +1,12 @@
 {% extends 'activity/base.html' %}
 
-{% block title %}Activités à venir{% endblock %}
+{% block title %}Mes inscriptions{% endblock %}
 
 {% block content %}
-<h1>Activités à venir</h1>
+<h1>Mes inscriptions</h1>
 
-<!-- Liste des activités -->
 <div class="row mb-3">
-    {% for activites in page_obj %}
+    {% for activity in page_obj %}
         <div class="col-md-4 mb-3 d-flex">
             <div class="card flex-fill">
                 <div class="card-body">
@@ -28,7 +27,7 @@
     {% endfor %}
 </div>
 
-<!-- Pagination -->
+
 <nav>
     <ul class="pagination">
         {% if page_obj.has_previous %}

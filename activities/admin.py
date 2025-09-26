@@ -1,9 +1,15 @@
 from django.contrib import admin
 from .models import User, Activity, Category
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+
+class UserAdmin(BaseUserAdmin):
+    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'is_active')
+    list_filter = ('is_staff', 'is_active')
+    search_fields = ('username', 'email')
+    ordering = ('username',)
 
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('nom')
-
+    list_display = ('nom',)   
 
 class ActivityAdmin(admin.ModelAdmin):
     list_display = ('title', 'location_city', 'start_time', 'end_time', 'proposer')
@@ -11,13 +17,6 @@ class ActivityAdmin(admin.ModelAdmin):
     search_fields = ('title', 'description', 'location_city', 'proposer__username', 'category__nom')
     filter_horizontal = ('attendees',)
 
-class UserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email', 'is_staff', 'is_active')
-    list_filter = ('is_staff', 'is_active')
-    search_fields = ('username', 'email')
-    filter_horizontal = ('groups', 'user_permissions')
-
-admin.site.register(User)
-admin.site.register(Activity)
-admin.site.register(Category)
-# Register your models here.
+admin.site.register(User, UserAdmin)
+admin.site.register(Activity, ActivityAdmin)
+admin.site.register(Category, CategoryAdmin)

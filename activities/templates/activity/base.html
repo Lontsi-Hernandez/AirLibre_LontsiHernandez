@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Mon site{% endblock %}</title>
+    <title>{% block title %}AirLibre{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -16,7 +16,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
 
-                <!-- Filtres de vue -->
+                
                 <form method="get" class="d-flex align-items-center me-3">
                     <input type="hidden" name="categorie" value="{{ selected_categorie }}">
                     
@@ -24,12 +24,12 @@
                     {% if user.is_authenticated %}
                     <a class="btn btn-sm" href="{% url 'mes_activites' user.id%}">Mes activites</a>
                     <a class="btn btn-sm" href="{% url 'mes_inscriptions' user.id%}">Mes inscriptions</a>
-                        <a href="{% url 'ajouter_activite' %}" class="btn btn-sm me-1">Ajouter activite</button>
-                        <button type="submit" name="vue" value="inscriptions" class="btn btn-sm {% if vue == 'inscriptions' %}btn-primary{% else %}btn-outline-primary{% endif %}">Mes inscriptions</button>
+                        <a href="{% url 'ajouter_activite' %}" class="btn btn-sm me-1">Ajouter activite</a></button>
+                        
                     {% endif %}
                 </form>
 
-                <!-- Filtre catégories -->
+                
                 <form method="get" class="d-flex align-items-center">
                     <input type="hidden" name="vue" value="{{ vue }}">
                     <select name="categorie" class="form-select form-select-sm" onchange="this.form.submit()">
@@ -41,7 +41,7 @@
                 </form>
             </ul>
 
-            <!-- Authentification -->
+          
             <ul class="navbar-nav">
                 {% if not user.is_authenticated %}
                     <li class="nav-item">
@@ -52,8 +52,12 @@
                     </li>
                 {% else %}
                     <li class="nav-item me-2">
-                        <a href="">
-                            <img src="{{ user.avatar.url }}" alt="avatar" class="rounded-circle" width="32" height="32">
+                        <a href="{% url 'profil' %}" class="nav-link d-flex align-items-center">
+                            {% if user.avatar %}
+                                <img src="{{ user.avatar.url }}" alt="avatar" class="rounded-circle" width="32" height="32">
+                            {% else %}
+                                <img src="../../../media/avatars/ia_image.jpg" alt="avatar" class="rounded-circle" width="32" height="32">
+                            {% endif %}
                             {{ user.username }}
                         </a>
                     </li>
@@ -67,6 +71,17 @@
 </nav>
 
 <div class="container">
+    
+{% if messages %}
+    <div class="alert alert-info mt-3">
+        <ul class="mb-0">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
     {% block content %}{% endblock %}
 </div>
 

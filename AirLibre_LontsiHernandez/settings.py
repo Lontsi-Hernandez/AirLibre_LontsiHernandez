@@ -11,10 +11,13 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+MEDIA_URL = '/media/'  
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -25,7 +28,11 @@ SECRET_KEY = 'django-insecure-k1)ai8#ntd^bt7=cd4d5ftt9^prtqq3c4xd0r%&6_r%f$z5pdg
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "127.0.0.1", 
+    "localhost",  
+ 
+]
 
 
 # Application definition
@@ -55,7 +62,7 @@ ROOT_URLCONF = 'AirLibre_LontsiHernandez.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "template"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -99,7 +106,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
+AUTH_USER_MODEL = 'activities.User'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/

@@ -4,7 +4,7 @@
 
 {% block content %}
 <h1>Créer un compte</h1>
-<form method="post" action="{% url 'signup' %}">
+<form method="post" action="{% url 'signup' %}" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form }}
     <button type="submit" class="btn btn-primary">Envoyer</button>
