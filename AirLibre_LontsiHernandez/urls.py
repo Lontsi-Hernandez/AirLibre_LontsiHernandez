@@ -24,7 +24,7 @@ from django.shortcuts import redirect
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('activity/', include('activities.urls')),
-     path('', lambda request: redirect('activity/', permanent=False)),
+    path('', lambda request: redirect('activity/', permanent=False)),
 ]
 
 if settings.DEBUG:

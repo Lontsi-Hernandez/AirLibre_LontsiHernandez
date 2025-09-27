@@ -4,12 +4,6 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.forms import UserChangeForm
 
 
-class EditUserForm(UserChangeForm):
-    password = None  # pour ne pas afficher le champ password
-
-    class Meta:
-        model = User
-        fields = ['username', 'email', 'avatar', 'bio']
         
 class UserProfileForm(forms.ModelForm):
     class Meta:
@@ -56,7 +50,7 @@ class SignupForm(forms.ModelForm):
         help_texts = {
             'username': 'Choisissez un nom unique pour vous connecter.',
             'email': 'Nous utiliserons cette adresse pour vous contacter.',
-            'avatar': 'Téléversez une image (JPEG, PNG, etc.).',
+            'avatar': 'Téléversez une image',
         }
 
 

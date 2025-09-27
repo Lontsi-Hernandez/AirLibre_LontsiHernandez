@@ -22,9 +22,9 @@ User = get_user_model()
 
 
 def index(request):
-    user = request.user if request.user.is_authenticated else None
+  
     categorie_id = request.GET.get('categorie')
-    vue = request.GET.get('vue', 'toutes')
+  
     page_number = request.GET.get('page', 1)
 
     activities = Activity.objects.all().order_by('start_time')
@@ -32,12 +32,7 @@ def index(request):
     if categorie_id:
         activities = activities.filter(category_id=categorie_id)
 
-    if user:
-        if vue == 'proposees':
-            activities = activities.filter(proposer=user)
-        elif vue == 'inscriptions':
-            activities = activities.filter(attendees=user)
-    
+
 
     paginator = Paginator(activities, 3)
     page_obj = paginator.get_page(page_number)
@@ -48,8 +43,7 @@ def index(request):
         'page_obj': page_obj,
         'categories': categories,
         'selected_categorie': categorie_id,
-        'vue': vue,
-        'user': user,
+      
     })
 
 
@@ -61,12 +55,12 @@ def signup(request):
             user = form.save(commit=False)
             user.set_password(form.cleaned_data["password1"])
 
-            # bio
+            
             bio = form.cleaned_data.get('bio')
             if bio:
                 user.bio = bio
 
-            user.save()  # Django sauvegarde aussi l’avatar via request.FILES
+            user.save()  
             
             messages.success(request, "Inscription réussie ! Vous pouvez maintenant vous connecter.")
             return redirect('connexion')
@@ -76,36 +70,6 @@ def signup(request):
         form = SignupForm()
 
     return render(request, 'activity/signup.html', {'form': form})
-
-
-# def signup(request):
-#     """ Vue pour l'inscription de l'utilisateur """
-#     if request.method == 'POST':
-#         form = SignupForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             user = form.save(commit=False)
-#             user.set_password(form.cleaned_data["password1"])
-
-#             avatar = form.cleaned_data.get('avatar')
-#             if avatar:
-#                 fs = FileSystemStorage() 
-#                 filename = fs.save(avatar.name, avatar)
-#                 uploaded_file_url = fs.url(filename)
-#                 user.avatar = filename
-
-#             bio = form.cleaned_data.get('bio')
-#             if bio:
-#                 user.bio = bio
-#             user.save()
-            
-#             messages.success(request, "Inscription réussie ! Vous pouvez maintenant vous connecter.")
-#             return redirect('connexion') 
-#         else:
-#             messages.error(request, "Veuillez corriger les erreurs ci-dessous.")
-#     else:
-#         form = SignupForm()
-
-#     return render(request, 'activity/signup.html', {'form': form})
 
 
 
